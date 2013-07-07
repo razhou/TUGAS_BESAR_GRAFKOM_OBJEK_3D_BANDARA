@@ -11,15 +11,88 @@
 #include "vec3f.h"
 
 
+
+GLuint _textureId;
+
+
+GLuint loadTexture(Image* Foto) {
+	GLuint textureId;
+	glGenTextures(1, &textureId);
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Foto->width, Foto->height, 0, GL_RGB, GL_UNSIGNED_BYTE, Foto->pixels);
+	return textureId;
+}
+
+void initRendering1() {
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_COLOR_MATERIAL);
+	
+	Image* Foto = loadBMP("wood.bmp");
+	_textureId = loadTexture(Foto);
+	delete Foto;
+}
+
+void handleResize(int w, int h) {
+	glViewport(0, 0, w, h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45.0, (float)w / (float)h, 1.0, 200.0);
+}
+
+void papan() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	glTranslatef(0.0f, 0.0f, -20.0f);
+	
+	GLfloat ambientLight[] = {0.3f, 0.3f, 0.3f, 1.0f};
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
+	
+	GLfloat lightColor[] = {0.7f, 0.7f, 0.7f, 1.0f};
+
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor);
+
+	
+
+	
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, _textureId);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+
+	
+	glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glutSwapBuffers();
+}
+
+
+
+
+
+
+
+
+
+
+
 static GLfloat spin, spin2 = 0.0;
 float angle = 0;
+GLuint mentari;
 using namespace std;
 
 float lastx, lasty;
 GLint stencilBits;
-static int viewx = 90;           /////////////// script awal penglihatan /////////
+static int viewx = 100;           /////////////// script awal penglihatan /////////
 static int viewy = 80;
-static int viewz = 200;
+static int viewz = 90;
 
 float rot = 0;
 
@@ -177,7 +250,7 @@ public:
 
 
 
-void initRendering() {
+void initRendering(void) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
@@ -212,6 +285,8 @@ Terrain* _terrain;
 Terrain* _terrainTanah;
 Terrain* _terrainAir;
 
+
+
 const GLfloat light_ambient[] = { 0.3f, 0.3f, 0.3f, 1.0f };
 const GLfloat light_diffuse[] = { 0.7f, 0.7f, 0.7f, 1.0f };
 const GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -228,6 +303,7 @@ const GLfloat high_shininess[] = { 100.0f };
 void cleanup() {
 	delete _terrain;
 	delete _terrainTanah;
+
 }
 
 //untuk di display
@@ -272,6 +348,58 @@ void drawSceneTanah(Terrain *terrain, GLfloat r, GLfloat g, GLfloat b) {
 
 unsigned int LoadTextureFromBmpFile(char *filename);
 
+
+void matahari(void)
+{
+    
+    glPushMatrix();
+    glTranslatef(-120,120,-100);
+    glColor3ub(255, 253, 116);
+    glutSolidSphere(10, 60, 60);
+    glPopMatrix();
+
+
+    glEndList();
+}
+
+
+void awan(void){
+glPushMatrix(); 
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3ub(153, 223, 255);
+glutSolidSphere(10, 50, 50);
+glPopMatrix();
+glPushMatrix();
+glTranslatef(10,100,1);
+glutSolidSphere(5, 50, 50);
+glPopMatrix();   
+glPushMatrix();
+glTranslatef(-2,90,-2);
+glutSolidSphere(7, 50, 50);
+glPopMatrix();   
+glPushMatrix();
+glTranslatef(-10,85,0);
+glutSolidSphere(7, 50, 50);
+glPopMatrix();  
+glPushMatrix();
+glTranslatef(6,80,2);
+glutSolidSphere(7, 50, 50);
+glPopMatrix();      
+}     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void markajalan(void) {
      ////////////////////////////////////////////////////////////GARIS PUTUS - PUTUS DI ASPAL.BMP/////////////////////////////////////////
     glPushMatrix();
@@ -283,21 +411,134 @@ void markajalan(void) {
     glPopMatrix(); 
 } 
 
-void pohon(void){
-//batang
-GLUquadricObj *pObj;
-pObj =gluNewQuadric();
-gluQuadricNormals(pObj, GLU_SMOOTH);    
 
+void bangunan(void){
+	glPushMatrix();
+
+	//glBindTexture(GL_TEXTURE_3D, texture[0]);
+	//drawSceneTanah(_terrainPapan, 0.0f, 0.2f, 0.5f);
+	glPopMatrix();     
+     
+     
+     
 glPushMatrix();
-glColor3ub(104,70,14);
-glRotatef(270,1,0,0);
-gluCylinder(pObj, 4, 0.7, 30, 25, 25);
+glTranslatef(30, 30, -120);
+glScalef(10,5,5);
+glColor3f(0.3402, 0.3412, 0.3117);
+glutSolidCube(20);
+glPopMatrix(); 
+//atap
+glPushMatrix();
+
+glTranslatef(0, 100, -100);
+glScalef(20, 10, 20);
+glRotatef(5, 0, 1, 0);
+glColor3f(0, 1, 0);
+glutSolidOctahedron();
+
+glPopMatrix(); 
+
+//pagar
+glPushMatrix();
+glColor3f(0, 1, 0);
+glTranslatef(40,70, -69);
+glScalef(10,2,1);
+glutSolidCube(15);
+glPopMatrix();
+
+//jendela1
+glPushMatrix();
+glColor3f(1, 1, 1);
+glTranslatef(-45,43, -69);
+glScaled(6,10,1);
+glutSolidCube(2);
+glPopMatrix();
+
+//jendela2
+glPushMatrix();
+glColor3f(1, 1, 1);
+glTranslatef(-25,43, -69);
+glScaled(6,10,1);
+glutSolidCube(2);
+glPopMatrix();
+
+//jendela2
+glPushMatrix();
+glColor3f(1, 1, 1);
+glTranslatef(-5,43, -69);
+glScaled(6,10,1);
+glutSolidCube(2);
+glPopMatrix();
+
+//jendela2
+glPushMatrix();
+glColor3f(1, 1, 1);
+glTranslatef(15,43, -69);
+glScaled(6,10,1);
+glutSolidCube(2);
+glPopMatrix();
+
+//jendela2
+glPushMatrix();
+glColor3f(1, 1, 1);
+glTranslatef(35,43, -69);
+glScaled(6,10,1);
+glutSolidCube(2);
+glPopMatrix();
+
+//jendela2
+glPushMatrix();
+glColor3f(1, 1, 1);
+glTranslatef(55,43, -69);
+glScaled(6,10,1);
+glutSolidCube(2);
+glPopMatrix();
+
+//jendela2
+glPushMatrix();
+glColor3f(1, 1, 1);
+glTranslatef(75,43, -69);
+glScaled(6,10,1);
+glutSolidCube(2);
+glPopMatrix();
+
+//jendela2
+glPushMatrix();
+glColor3f(1, 1, 1);
+glTranslatef(95,43, -69);
+glScaled(6,10,1);
+glutSolidCube(2);
+glPopMatrix();
+
+//jendela2
+glPushMatrix();
+glColor3f(1, 1, 1);
+glTranslatef(115,43, -69);
+glScaled(6,10,1);
+glutSolidCube(2);
+glPopMatrix();
+
+//pintu
+ glPushMatrix();
+ glColor3f(0.0980, 0.0608, 0.0077);
+glTranslatef(25,15, -70);
+glScaled(15,10,1);
+glutSolidCube(2);
+glPopMatrix();
+
+//garis atas pintu
+ glPushMatrix();
+ glColor3f(0.0980, 0.0608, 0.0077);
+glTranslatef(25,27, -70);
+glScaled(15,1,1);
+glutSolidCube(1);
 glPopMatrix();
 
 
 
-}
+     }
+
+
 
 void display(void) {
 	glClearStencil(0); //clear the stencil buffer
@@ -308,6 +549,14 @@ void display(void) {
 	gluLookAt(viewx, viewy, viewz, 0.0, 0.0, 5.0, 0.0, 1.0, 0.0);
 
 	glPushMatrix();
+
+awan();
+matahari();
+bangunan();
+
+
+
+	
 
     ////////////////////////////////////////////////////////////GARIS PUTUS - PUTUS DI ASPAL.BMP/////////////////////////////////////////
     glPushMatrix();
@@ -582,6 +831,9 @@ void display(void) {
 	//glBindTexture(GL_TEXTURE_3D, texture[0]);
 	drawSceneTanah(_terrainAir, 0.0f, 0.2f, 0.5f);
 	glPopMatrix();
+	
+	
+	
 
 	glutSwapBuffers();
 	glFlush();
@@ -607,7 +859,7 @@ void init(void) {
 	_terrain = loadTerrain("jalan.bmp", 20);
 	_terrainTanah = loadTerrain("aspal.bmp", 20);
 	_terrainAir = loadTerrain("heightmapAir.bmp", 20);
-
+   
 	//binding texture
 
 }
@@ -705,6 +957,7 @@ int main(int argc, char **argv) {
 	glutIdleFunc(display);
 	glutReshapeFunc(reshape);
 	glutSpecialFunc(kibor);
+
 
 	glutKeyboardFunc(keyboard);
 
