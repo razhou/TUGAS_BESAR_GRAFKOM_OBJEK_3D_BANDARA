@@ -10,8 +10,6 @@
 #include "imageloader.h"
 #include "vec3f.h"
 
-
-
 GLuint _textureId;
 
 
@@ -56,31 +54,16 @@ void papan() {
 	GLfloat lightColor[] = {0.7f, 0.7f, 0.7f, 1.0f};
 
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor);
-
-	
-
 	
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, _textureId);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-
 	
 	glEnd();
 	glDisable(GL_TEXTURE_2D);
 	glutSwapBuffers();
 }
-
-
-
-
-
-
-
-
-
 
 
 static GLfloat spin, spin2 = 0.0;
@@ -90,9 +73,9 @@ using namespace std;
 
 float lastx, lasty;
 GLint stencilBits;
-static int viewx = 100;           /////////////// script awal penglihatan /////////
-static int viewy = 80;
-static int viewz = 90;
+static int viewx = 10;           /////////////// script awal penglihatan /////////
+static int viewy = 90;
+static int viewz = 300;
 
 float rot = 0;
 
@@ -351,54 +334,52 @@ unsigned int LoadTextureFromBmpFile(char *filename);
 
 void matahari(void)
 {
-    
     glPushMatrix();
     glTranslatef(-120,120,-100);
     glColor3ub(255, 253, 116);
-    glutSolidSphere(10, 60, 60);
+    glColor3f(1.0000, 0.5252, 0.0157);
+    glutSolidSphere(20, 60, 60);
     glPopMatrix();
-
-
     glEndList();
 }
 
 
 void awan(void){
-glPushMatrix(); 
-glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-glColor3ub(153, 223, 255);
-glutSolidSphere(10, 50, 50);
-glPopMatrix();
-glPushMatrix();
-glTranslatef(10,100,1);
-glutSolidSphere(5, 50, 50);
-glPopMatrix();   
-glPushMatrix();
-glTranslatef(-2,90,-2);
-glutSolidSphere(7, 50, 50);
-glPopMatrix();   
-glPushMatrix();
-glTranslatef(-10,85,0);
-glutSolidSphere(7, 50, 50);
-glPopMatrix();  
-glPushMatrix();
-glTranslatef(6,80,2);
-glutSolidSphere(7, 50, 50);
-glPopMatrix();      
+     glPushMatrix(); 
+     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+     glColor3ub(153, 223, 255);
+     glTranslatef(60,100,-2);
+     glutSolidSphere(10, 50, 50);
+     glPopMatrix();
+
+     glPushMatrix();
+     glTranslatef(50,99,-2);
+     glutSolidSphere(9, 50, 50);
+     glPopMatrix();   
+     
+     glPushMatrix();
+     glTranslatef(70,98,-2);
+     glutSolidSphere(9, 50, 50);
+     glPopMatrix();     
+     
+     glPushMatrix();
+     glTranslatef(43,97,-2);
+     glutSolidSphere(7, 50, 50);
+     glPopMatrix();
+     
+     glPushMatrix();
+     glTranslatef(50,104,-8);
+     glutSolidSphere(10, 50, 50);
+     glPopMatrix();
 }     
 
-
-
-
-
-
-
-
-
-
-
-
-
+void lampu(void) {
+     ////////////////////////////////////////////////////////////LAMPU PEMBATAS DI LANDASAN/////////////////////////////////////////
+     glPushMatrix();
+     glTranslatef(1,0.6,2);
+     glutSolidSphere(5, 50, 50);
+     glPopMatrix(); 
+} 
 
 void markajalan(void) {
      ////////////////////////////////////////////////////////////GARIS PUTUS - PUTUS DI ASPAL.BMP/////////////////////////////////////////
@@ -418,8 +399,6 @@ void bangunan(void){
 	//glBindTexture(GL_TEXTURE_3D, texture[0]);
 	//drawSceneTanah(_terrainPapan, 0.0f, 0.2f, 0.5f);
 	glPopMatrix();     
-     
-     
      
 glPushMatrix();
 glTranslatef(30, 30, -120);
@@ -529,17 +508,11 @@ glPopMatrix();
 //garis atas pintu
  glPushMatrix();
  glColor3f(0.0980, 0.0608, 0.0077);
-glTranslatef(25,27, -70);
+ glTranslatef(25,27, -70);
 glScaled(15,1,1);
 glutSolidCube(1);
 glPopMatrix();
-
-
-
      }
-
-
-
 void display(void) {
 	glClearStencil(0); //clear the stencil buffer
 	glClearDepth(1.0f);
@@ -550,13 +523,304 @@ void display(void) {
 
 	glPushMatrix();
 
-awan();
-matahari();
+
 bangunan();
 
+///////////////////////////////////////// MATAHARIKU ///////////////////////////////////
+    glPushMatrix();
+    glTranslatef(5,90,20); 
+    glScalef(1.25, 1.0, 0.20);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    matahari();
+    glPopMatrix();
+/////////////////////////////////////////////////////////// AHIRNYA MATAHARINYA BERES ///////////////
 
+////////////////////////////////// LAMPU - LAMPU PEMBATAS LANDASAN ////////////////////////////////////////////
+     glPushMatrix();
+     glTranslatef(-220,6,30); 
+     glScalef(0.5,0.5,0.5);
+     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+     lampu();
+     glPopMatrix(); 
+     
+     glPushMatrix();
+     glTranslatef(-186,6,30); 
+     glScalef(0.5,0.5,0.5);
+     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+     lampu();
+     glPopMatrix(); 
+     
+     glPushMatrix();
+     glTranslatef(-185,6,65); 
+     glScalef(0.5,0.5,0.5);
+     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+     lampu();
+     glPopMatrix();    
+                                   glPushMatrix();
+                                   glTranslatef(-150,6,65); 
+                                   glScalef(0.5,0.5,0.5);
+                                   //glBindTexture(GL_TEXTURE_2D, texture[0]);
+                                   lampu();
+                                   glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-150,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-120,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-90,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-60,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-30,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(0,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(30,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(60,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(90,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(120,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(150,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(180,6,30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(205,6,53); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(245,6,63); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    
+    ////////////////////////// LAMPU KANAN ////////////////////////////////////////////
+    
+     glPushMatrix();
+     glTranslatef(-220,6,-30); 
+     glScalef(0.5,0.5,0.5);
+     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+     lampu();
+     glPopMatrix(); 
+     
+     glPushMatrix();
+     glTranslatef(-186,6,-30); 
+     glScalef(0.5,0.5,0.5);
+     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+     lampu();
+     glPopMatrix(); 
+     
+     glPushMatrix();
+     glTranslatef(-185,6,-65); 
+     glScalef(0.5,0.5,0.5);
+     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+     lampu();
+     glPopMatrix();    
+                                   glPushMatrix();
+                                   glTranslatef(-150,6,-65); 
+                                   glScalef(0.5,0.5,0.5);
+                                   //glBindTexture(GL_TEXTURE_2D, texture[0]);
+                                   lampu();
+                                   glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-150,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-120,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-90,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-60,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-30,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(0,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(30,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(60,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(90,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(120,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(150,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(180,6,-30); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(205,6,-53); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(245,6,-63); 
+    glScalef(0.5,0.5,0.5);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    lampu();
+    glPopMatrix();
+//////////////////////////////////////////////////////////// AHIRNYA LAMPUNYA HABIS///////////////////////////
 
-	
+////////////////////////////////////////////// Awan - Awan Dilangit ////////////////////////////////////
+    glPushMatrix();
+    glTranslatef(5,90,20); 
+    glScalef(1.25, 1.0, 0.20);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    awan();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(60,40,20); 
+    glScalef(1.25, 1.0, 0.20);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    awan();
+    glPopMatrix();	
+    
+    glPushMatrix();
+    glTranslatef(-130,85,20); 
+    glScalef(1.25, 1.0, 0.20);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    awan();
+    glPopMatrix();
+    
+    glPushMatrix();
+    glTranslatef(-110,75,10); 
+    glScalef(1.25, 1.0, 0.20);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    awan();
+    glPopMatrix();
+
+///////////////////////////////////////////// AWAN _ AWAN BIRU DI LANGIT //////////////////////////////////////////////
+
 
     ////////////////////////////////////////////////////////////GARIS PUTUS - PUTUS DI ASPAL.BMP/////////////////////////////////////////
     glPushMatrix();

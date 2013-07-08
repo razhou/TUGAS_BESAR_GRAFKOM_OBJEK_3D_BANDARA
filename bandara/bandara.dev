@@ -1,7 +1,7 @@
 [Project]
 FileName=bandara.dev
 Name=bandara
-UnitCount=4
+UnitCount=5
 Type=1
 Ver=1
 ObjFiles=
@@ -39,6 +39,24 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[VersionInfo]
+Major=0
+Minor=1
+Release=1
+Build=1
+LanguageID=1033
+CharsetID=1252
+CompanyName=
+FileVersion=
+FileDescription=Developed using the Dev-C++ IDE
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=
+AutoIncBuildNr=0
+
 [Unit2]
 FileName=imageloader.cpp
 CompileCpp=1
@@ -59,25 +77,17 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[VersionInfo]
-Major=0
-Minor=1
-Release=1
-Build=1
-LanguageID=1033
-CharsetID=1252
-CompanyName=
-FileVersion=
-FileDescription=Developed using the Dev-C++ IDE
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=
-AutoIncBuildNr=0
-
 [Unit4]
+FileName=imageloader.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit5]
 FileName=vec3f.h
 CompileCpp=1
 Folder=
