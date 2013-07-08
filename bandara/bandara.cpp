@@ -393,6 +393,42 @@ void markajalan(void) {
 } 
 
 
+/////////////////////////////////////////POHON////////////////////////////////
+void pohon(void){
+    //batang
+    GLUquadricObj *pObj;
+    pObj =gluNewQuadric();
+    gluQuadricNormals(pObj, GLU_SMOOTH);
+ 
+    glPushMatrix();
+    glColor3ub(104,70,14);
+    glRotatef(270,1,0,0);
+    gluCylinder(pObj, 4, 0.7, 30, 25, 25);
+    glPopMatrix();
+}
+ 
+//ranting
+void ranting(void){
+    GLUquadricObj *pObj;
+    pObj =gluNewQuadric();
+    gluQuadricNormals(pObj, GLU_SMOOTH);
+    glPushMatrix();
+    glColor3ub(104,70,14);
+    glTranslatef(0,27,0);
+    glRotatef(330,1,0,0);
+    gluCylinder(pObj, 0.6, 0.1, 15, 25, 25);
+    glPopMatrix();
+ 
+    //daun
+    glPushMatrix();
+    glColor3ub(18,118,13);
+    glScaled(5, 5, 5);
+    glTranslatef(0,7,3);
+    glutSolidDodecahedron();
+    glPopMatrix();
+}
+
+
 void bangunan(void){
 	glPushMatrix();
 
@@ -525,6 +561,140 @@ void display(void) {
 
 
 bangunan();
+
+///////////////////////////////////////POHON////////////////////////////////////
+//Pohon 1
+glPushMatrix();
+        glTranslatef(-180,15,-105);
+        glScalef(1, 1, 1);
+        glRotatef(10,0,1,0);
+        pohon();
+ 
+        //ranting1
+        ranting();
+ 
+        //ranting2
+        glPushMatrix();
+        glScalef(1.5, 1.5, 1.5);
+        glTranslatef(0,25,25);
+        glRotatef(250,1,0,0);
+        ranting();
+        glPopMatrix();
+ 
+        //ranting3
+        glPushMatrix();
+        glScalef(1.8, 1.8, 1.8);
+        glTranslatef(0,-6,21.5);
+        glRotatef(-55,1,0,0);
+        ranting();
+        glPopMatrix();
+glPopMatrix();
+//Pohon 2
+glPushMatrix();
+        glTranslatef(-150,15,-105);
+        glScalef(1, 1, 1);
+        glRotatef(170,0,1,0);
+        pohon();
+ 
+        //ranting1
+        ranting();
+ 
+        //ranting2
+        glPushMatrix();
+        glScalef(1.5, 1.5, 1.5);
+        glTranslatef(0,25,25);
+        glRotatef(250,1,0,0);
+        ranting();
+        glPopMatrix();
+ 
+        //ranting3
+        glPushMatrix();
+        glScalef(1.8, 1.8, 1.8);
+        glTranslatef(0,-6,21.5);
+        glRotatef(-55,1,0,0);
+        ranting();
+        glPopMatrix();
+glPopMatrix();
+//Pohon 3
+glPushMatrix();
+        glTranslatef(-105,15,-105);
+        glScalef(1, 1, 1);
+        glRotatef(90,0,1,0);
+        pohon();
+ 
+        //ranting1
+        ranting();
+ 
+        //ranting2
+        glPushMatrix();
+        glScalef(1.5, 1.5, 1.5);
+        glTranslatef(0,25,25);
+        glRotatef(250,1,0,0);
+        ranting();
+        glPopMatrix();
+ 
+        //ranting3
+        glPushMatrix();
+        glScalef(1.8, 1.8, 1.8);
+        glTranslatef(0,-6,21.5);
+        glRotatef(-55,1,0,0);
+        ranting();
+        glPopMatrix();
+glPopMatrix();
+//Pohon 4
+glPushMatrix();
+        glTranslatef(165,15,-105);
+        glScalef(1, 1, 1);
+        glRotatef(90,0,1,0);
+        pohon();
+ 
+        //ranting1
+        ranting();
+ 
+        //ranting2
+        glPushMatrix();
+        glScalef(1.5, 1.5, 1.5);
+        glTranslatef(0,25,25);
+        glRotatef(250,1,0,0);
+        ranting();
+        glPopMatrix();
+ 
+        //ranting3
+        glPushMatrix();
+        glScalef(1.8, 1.8, 1.8);
+        glTranslatef(0,-6,21.5);
+        glRotatef(-55,1,0,0);
+        ranting();
+        glPopMatrix();
+glPopMatrix();
+//Pohon 5
+glPushMatrix();
+        glTranslatef(215,15,-105);
+        glScalef(1, 1, 1);
+        glRotatef(110,0,1,0);
+        pohon();
+ 
+        //ranting1
+        ranting();
+ 
+        //ranting2
+        glPushMatrix();
+        glScalef(1.5, 1.5, 1.5);
+        glTranslatef(0,25,25);
+        glRotatef(250,1,0,0);
+        ranting();
+        glPopMatrix();
+ 
+        //ranting3
+        glPushMatrix();
+        glScalef(1.8, 1.8, 1.8);
+        glTranslatef(0,-6,21.5);
+        glRotatef(-55,1,0,0);
+        ranting();
+        glPopMatrix();
+glPopMatrix();
+
+
 
 ///////////////////////////////////////// MATAHARIKU ///////////////////////////////////
     glPushMatrix();
