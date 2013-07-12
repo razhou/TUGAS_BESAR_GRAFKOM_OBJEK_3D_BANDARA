@@ -1,3 +1,9 @@
+//BJEK 3D BANDARA
+//Programmer: OKE TRIYANA(10109365)
+//            ASYER TULIAN KALO(10109378)
+//            RAJU RIYANDA(10109399)
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,60 +16,7 @@
 #include "imageloader.h"
 #include "vec3f.h"
 
-GLuint _textureId;
 
-
-GLuint loadTexture(Image* Foto) {
-	GLuint textureId;
-	glGenTextures(1, &textureId);
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Foto->width, Foto->height, 0, GL_RGB, GL_UNSIGNED_BYTE, Foto->pixels);
-	return textureId;
-}
-
-void initRendering1() {
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_NORMALIZE);
-	glEnable(GL_COLOR_MATERIAL);
-	
-	Image* Foto = loadBMP("wood.bmp");
-	_textureId = loadTexture(Foto);
-	delete Foto;
-}
-
-void handleResize(int w, int h) {
-	glViewport(0, 0, w, h);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45.0, (float)w / (float)h, 1.0, 200.0);
-}
-
-void papan() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	glTranslatef(0.0f, 0.0f, -20.0f);
-	
-	GLfloat ambientLight[] = {0.3f, 0.3f, 0.3f, 1.0f};
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
-	
-	GLfloat lightColor[] = {0.7f, 0.7f, 0.7f, 1.0f};
-
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor);
-	
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, _textureId);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	
-	glEnd();
-	glDisable(GL_TEXTURE_2D);
-	glutSwapBuffers();
-}
 
 
 static GLfloat spin, spin2 = 0.0;
@@ -266,7 +219,7 @@ float _angle = 60.0f;
 //buat tipe data terain
 Terrain* _terrain;
 Terrain* _terrainTanah;
-Terrain* _terrainAir;
+
 
 
 
@@ -291,22 +244,7 @@ void cleanup() {
 
 //untuk di display
 void drawSceneTanah(Terrain *terrain, GLfloat r, GLfloat g, GLfloat b) {
-	//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	/*
-	 glMatrixMode(GL_MODELVIEW);
-	 glLoadIdentity();
-	 glTranslatef(0.0f, 0.0f, -10.0f);
-	 glRotatef(30.0f, 1.0f, 0.0f, 0.0f);
-	 glRotatef(-_angle, 0.0f, 1.0f, 0.0f);
-
-	 GLfloat ambientColor[] = {0.4f, 0.4f, 0.4f, 1.0f};
-	 glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
-
-	 GLfloat lightColor0[] = {0.6f, 0.6f, 0.6f, 1.0f};
-	 GLfloat lightPos0[] = {-0.5f, 0.8f, 0.1f, 0.0f};
-	 glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
-	 glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
-	 */
+	
 	float scale = 500.0f / max(terrain->width() - 1, terrain->length() - 1);
 	glScalef(scale, scale, scale);
 	glTranslatef(-(float) (terrain->width() - 1) / 2, 0.0f,
@@ -430,11 +368,7 @@ void ranting(void){
 
 
 void bangunan(void){
-	glPushMatrix();
-
-	//glBindTexture(GL_TEXTURE_3D, texture[0]);
-	//drawSceneTanah(_terrainPapan, 0.0f, 0.2f, 0.5f);
-	glPopMatrix();     
+   
      
 glPushMatrix();
 glTranslatef(30, 30, -120);
@@ -442,6 +376,7 @@ glScalef(10,5,5);
 glColor3f(0.3402, 0.3412, 0.3117);
 glutSolidCube(20);
 glPopMatrix(); 
+
 
 //pagar
 glPushMatrix();
@@ -539,18 +474,9 @@ glScaled(15,1,1);
 glutSolidCube(1);
 glPopMatrix();
      }
-void display(void) {
-	glClearStencil(0); //clear the stencil buffer
-	glClearDepth(1.0f);
-	glClearColor(0.0, 0.6, 0.8, 1);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); //clear the buffers
-	glLoadIdentity();
-	gluLookAt(viewx, viewy, viewz, 0.0, 0.0, 5.0, 0.0, 1.0, 0.0);
-
-	glPushMatrix();
-
-
-bangunan();
+   
+   
+void atap(void){
 //////////////////////////////////ATAP//////////////////////////////////////////
 glPushMatrix();
 glScaled(2.9, 0.2, 1);
@@ -593,7 +519,207 @@ glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 glColor3d(0, 0, 0);
 glutSolidCube(85);
 glPopMatrix();
+}  
+     
+     
+     
+void body(void){
+     glPushMatrix(); 
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3ub(153, 223, 255);
+glColor3f(1.0,0.0,0.0);
+glutSolidSphere(10, 50, 50);
+glPopMatrix();
+     }
+     
+void depan(void){
+     glPushMatrix(); 
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3ub(153, 223, 255);
+glColor3f(0.8,0.8,0.8);
+glutSolidSphere(8, 25, 10);
+glPopMatrix();
+     
+     }
+     
+void sayap(void){
+    glPushMatrix(); 
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3ub(153, 223, 255);
+glColor3f(0.9,0.8,0.8);
+glutSolidSphere(8, 25, 10);
+glPopMatrix();
+     }     
 
+     
+void sayapbelakang(void){
+     glPushMatrix(); 
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3ub(153, 223, 255);
+glColor3f(0.9,0.8,0.8);
+glutSolidSphere(8, 25, 10);
+glPopMatrix();
+     } 
+     
+ void sayapatas(void){
+    glPushMatrix(); 
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3ub(153, 223, 255);
+glColor3f(0.9,0.8,0.8);
+glutSolidSphere(10,100, 80);
+glPopMatrix();
+     }       
+     
+void roda(void){
+glPushMatrix();
+ glColor3f(0.0980, 0.0608, 0.0077);
+glScaled(1.5,10,3);
+glutSolidCube(1);
+glPopMatrix();
+
+}
+
+void roda1(void){
+        glPushMatrix(); 
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3ub(153, 223, 255);
+glColor3f(0.0,0.0,0.0);
+glutSolidSphere(2, 50, 4);
+glPopMatrix();
+}
+      
+void knalpot(void) {
+     ////////////////////////////////////////////////////////////Knalpot/////////////////////////////////////////
+     glPushMatrix();
+     glTranslatef(1,0.6,2);
+     glutSolidSphere(5, 50, 50);
+     glPopMatrix(); 
+} 
+
+     
+void pesawat(void){
+
+GLUquadricObj *pObj;
+pObj =gluNewQuadric();
+gluQuadricNormals(pObj, GLU_SMOOTH);    
+
+glPushMatrix();
+glTranslatef(20,30,10);
+glColor3ub(104,70,14);
+glRotatef(608,-1,50,5);
+gluCylinder(pObj, 4, 0.7, 25, 30, 30);
+glPopMatrix();   
+
+
+//body
+glPushMatrix();
+ glTranslatef(30,30,10); 
+    glScalef(5, 1, 1.5);
+    body();
+    glPopMatrix();
+
+
+//depan
+glPushMatrix();
+ glTranslatef(2,34,10); 
+    glScalef(2,0.98,1);
+  depan();
+    glPopMatrix();
+    
+ //sayap
+ glPushMatrix();
+ glTranslatef(30,30,10); 
+    glScalef(1,0.5,7);
+  sayap();
+    glPopMatrix();
+    
+   //sayap belakang
+ glPushMatrix();
+ glTranslatef(67,30,10); 
+    glScalef(1,0.5,3);
+  sayapbelakang();
+    glPopMatrix();
+    
+    //sayap atas
+  glPushMatrix();
+ glTranslatef(67,40,10); 
+    glScalef(0.5,1,0.3);
+    glRotatef(130,1.0,1.0,1.0);
+  sayapatas();
+    glPopMatrix();
+  
+//roda depan
+glPushMatrix();    
+glTranslatef(10,20,10);
+roda();
+glPopMatrix();
+
+glPushMatrix();    
+glTranslatef(10,15,10);
+roda1();
+glPopMatrix();
+
+//roda belakang1
+
+glPushMatrix();    
+glTranslatef(50,20,2);
+roda();
+glPopMatrix();
+
+glPushMatrix();    
+glTranslatef(50,15,2);
+roda1();
+glPopMatrix();
+
+//roda belakang1
+
+glPushMatrix();    
+glTranslatef(50,20,18);
+roda();
+glPopMatrix();
+
+glPushMatrix();    
+glTranslatef(50,15,18);
+roda1();
+glPopMatrix();
+
+//pintu
+glPushMatrix();  
+glColor3f(1, 1, 1);
+glTranslatef(53,30, 20);
+glScaled(1,1.5,0.89);
+glutSolidSphere(5, 10, 5);
+glPopMatrix();
+
+   //Knalpot
+ glPushMatrix();
+ glTranslatef(76,30,8); 
+    glScalef(0.70,0.60,1);
+    glColor3f(1.0000, 0.5252, 0.0157);
+ knalpot();
+    glPopMatrix();
+
+}
+     
+     
+     
+     
+     
+     
+void display(void) {
+     
+    
+
+	glClearColor(0.0, 0.6, 0.8, 1);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); //clear the buffers
+	glLoadIdentity();
+	gluLookAt(viewx, viewy, viewz, 0.0, 0.0, 5.0, 0.0, 1.0, 0.0);
+
+	glPushMatrix();
+
+
+bangunan();
+atap();
 
 ///////////////////////////////////////POHON////////////////////////////////////
 //Pohon 1
@@ -727,7 +853,9 @@ glPushMatrix();
         glPopMatrix();
 glPopMatrix();
 
-
+//////////////////////////////////////////PESAWAT////////////////////////////////////////////
+pesawat();
+//////////////////////////////////////////PESAWAT////////////////////////////////////////////
 
 ///////////////////////////////////////// MATAHARIKU ///////////////////////////////////
     glPushMatrix();
@@ -742,125 +870,125 @@ glPopMatrix();
      glPushMatrix();
      glTranslatef(-220,6,30); 
      glScalef(0.5,0.5,0.5);
-     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    
      lampu();
      glPopMatrix(); 
      
      glPushMatrix();
      glTranslatef(-186,6,30); 
      glScalef(0.5,0.5,0.5);
-     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    
      lampu();
      glPopMatrix(); 
      
      glPushMatrix();
      glTranslatef(-185,6,65); 
      glScalef(0.5,0.5,0.5);
-     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+     
      lampu();
      glPopMatrix();    
                                    glPushMatrix();
                                    glTranslatef(-150,6,65); 
                                    glScalef(0.5,0.5,0.5);
-                                   //glBindTexture(GL_TEXTURE_2D, texture[0]);
+                                  
                                    lampu();
                                    glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-150,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-120,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-90,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-60,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-30,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(0,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(30,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(60,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(90,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+ 
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(120,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+ 
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(150,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(180,6,30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(205,6,53); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(245,6,63); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
@@ -870,118 +998,118 @@ glPopMatrix();
      glPushMatrix();
      glTranslatef(-220,6,-30); 
      glScalef(0.5,0.5,0.5);
-     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    
      lampu();
      glPopMatrix(); 
      
      glPushMatrix();
      glTranslatef(-186,6,-30); 
      glScalef(0.5,0.5,0.5);
-     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+    
      lampu();
      glPopMatrix(); 
      
      glPushMatrix();
      glTranslatef(-185,6,-65); 
      glScalef(0.5,0.5,0.5);
-     //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
      lampu();
      glPopMatrix();    
                                    glPushMatrix();
                                    glTranslatef(-150,6,-65); 
                                    glScalef(0.5,0.5,0.5);
-                                   //glBindTexture(GL_TEXTURE_2D, texture[0]);
+                                  
                                    lampu();
                                    glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-150,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-120,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-90,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-60,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-30,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(0,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(30,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(60,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(90,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(120,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(150,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(180,6,-30); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+
     lampu();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(205,6,-53); 
     glScalef(0.5,0.5,0.5);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+ 
     lampu();
     glPopMatrix();
     
@@ -997,28 +1125,28 @@ glPopMatrix();
     glPushMatrix();
     glTranslatef(5,90,20); 
     glScalef(1.25, 1.0, 0.20);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+ 
     awan();
     glPopMatrix();
 
     glPushMatrix();
     glTranslatef(60,40,20); 
     glScalef(1.25, 1.0, 0.20);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     awan();
     glPopMatrix();	
     
     glPushMatrix();
     glTranslatef(-130,85,20); 
     glScalef(1.25, 1.0, 0.20);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     awan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-110,75,10); 
     glScalef(1.25, 1.0, 0.20);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     awan();
     glPopMatrix();
 
@@ -1029,84 +1157,83 @@ glPopMatrix();
     glPushMatrix();
     glTranslatef(220,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(200,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(180,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(160,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(140,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(120,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(100,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(80,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+ 
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(60,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(40,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(20,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
+   
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(0.20,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
@@ -1114,154 +1241,132 @@ glPopMatrix();
      glPushMatrix();
     glTranslatef(-20,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-40,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-60,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-80,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-100,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-120,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-140,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-160,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-180,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
                   glPushMatrix();
                   glTranslatef(-180,5,0.0); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
     
                   glPushMatrix();
                   glTranslatef(-180,5,0.-10); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
                         
                   glPushMatrix();
                   glTranslatef(-180,5,0.-20); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
                   
                   glPushMatrix();
                   glTranslatef(-180,5,0.-30); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
                   
                   glPushMatrix();
                   glTranslatef(-180,5,0.-40); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
                         
                   glPushMatrix();
                   glTranslatef(-180,5,0.-50); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
                   
                   glPushMatrix();
                   glTranslatef(-180,5, -70); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
     
                   glPushMatrix();
                   glTranslatef(-180,5,0.-80); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
                         
                   glPushMatrix();
                   glTranslatef(-180,5,0.-90); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
                   
                   glPushMatrix();
                   glTranslatef(-180,5,0.-100); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
                   
                   glPushMatrix();
                   glTranslatef(-180,5,0.-110); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();
                   
                   glPushMatrix();
                   glTranslatef(-180,5, -120); 
                   glScalef(3, 3, 3);
-                  //glBindTexture(GL_TEXTURE_2D, texture[0]);
                   markajalan();
                   glPopMatrix();              
                   
     glPushMatrix();
     glTranslatef(-200,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
@@ -1269,35 +1374,28 @@ glPopMatrix();
     glPushMatrix();
     glTranslatef(-220,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-240,5,0.-60); 
     glScalef(3, 3, 3);
-    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     markajalan();
     glPopMatrix();
     
 
 //////////////////////////////////////////////////////////// AHIR DARI GARIS PUTUS - PUTUS ////////////////////////////////////////////////  
 
-	//glBindTexture(GL_TEXTURE_3D, texture[0]);
 	drawSceneTanah(_terrain, 0.3f, 0.9f, 0.0f);
 	glPopMatrix();
 
 	glPushMatrix();
 
-	//glBindTexture(GL_TEXTURE_3D, texture[0]);
+
 	drawSceneTanah(_terrainTanah,0.4613, 0.4627, 0.4174); ////////////////// WARNA ASPAL.BMP//////////////////////////////////////////////
 	glPopMatrix();
 
-	glPushMatrix();
 
-	//glBindTexture(GL_TEXTURE_3D, texture[0]);
-	drawSceneTanah(_terrainAir, 0.0f, 0.2f, 0.5f);
-	glPopMatrix();
 	
 	
 	
@@ -1325,7 +1423,7 @@ void init(void) {
 
 	_terrain = loadTerrain("jalan.bmp", 20);
 	_terrainTanah = loadTerrain("aspal.bmp", 20);
-	_terrainAir = loadTerrain("heightmapAir.bmp", 20);
+
    
 	//binding texture
 
@@ -1413,11 +1511,16 @@ void reshape(int w, int h) {
 
 
 int main(int argc, char **argv) {
+    	 cout<<"OBJEK_3D_BANDARA\n";
+    	 cout<<"================================\n";
+    	 cout<<"OKE TRIYANA          (10109365)\n";
+         cout<< "ASYER TULIAN KALO   (10109378)\n";
+         cout<<"RAJU RIYANDA         (10109399)\n";
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL | GLUT_DEPTH); //add a stencil buffer to the window
 	glutInitWindowSize(800, 600);
 	glutInitWindowPosition(100, 100);
-	glutCreateWindow("Sample Terain");
+	glutCreateWindow("Objek 3D Bandara-IF9");
 	init();
 
 	glutDisplayFunc(display);
@@ -1437,5 +1540,6 @@ int main(int argc, char **argv) {
     
     
 	glutMainLoop();
+
 	return 0;
 }
