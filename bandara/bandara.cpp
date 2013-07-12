@@ -73,9 +73,9 @@ using namespace std;
 
 float lastx, lasty;
 GLint stencilBits;
-static int viewx = 10;           /////////////// script awal penglihatan /////////
-static int viewy = 90;
-static int viewz = 300;
+static int viewx = 1;           /////////////// script awal penglihatan /////////
+static int viewy = 150;
+static int viewz = 450;
 
 float rot = 0;
 
@@ -442,16 +442,6 @@ glScalef(10,5,5);
 glColor3f(0.3402, 0.3412, 0.3117);
 glutSolidCube(20);
 glPopMatrix(); 
-//atap
-glPushMatrix();
-
-glTranslatef(0, 100, -100);
-glScalef(20, 10, 20);
-glRotatef(5, 0, 1, 0);
-glColor3f(0, 1, 0);
-glutSolidOctahedron();
-
-glPopMatrix(); 
 
 //pagar
 glPushMatrix();
@@ -561,6 +551,49 @@ void display(void) {
 
 
 bangunan();
+//////////////////////////////////ATAP//////////////////////////////////////////
+glPushMatrix();
+glScaled(2.9, 0.2, 1);
+glTranslatef(10, 435, -120);
+glRotated(-90, 1, 0, 0);
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3d(0.803921568627451, 0.5215686274509804, 0.2470588235294118);
+glutSolidCube(85);
+glPopMatrix();
+glPushMatrix();
+glScaled(2.2, 0.2, 1);
+glTranslatef(15, 600, -120);
+glRotated(-90, 1, 0, 0);
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3d(0.803921568627451, 0.5215686274509804, 0.2470588235294118);
+glutSolidCube(85);
+glPopMatrix();
+//////////////////////////////////TIANG ATAP//////////////////////////////////
+glPushMatrix();
+glScaled(0.3, 0.2, 1);
+glTranslatef(-50, 520, -120);
+glRotated(-90, 1, 0, 0);
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3d(0, 0, 0);
+glutSolidCube(85);
+glPopMatrix();
+glPushMatrix();
+glScaled(0.3, 0.2, 1);
+glTranslatef(270, 520, -120);
+glRotated(-90, 1, 0, 0);
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3d(0, 0, 0);
+glutSolidCube(85);
+glPopMatrix();
+glPushMatrix();
+glScaled(0.2, 0.5, 1);
+glTranslatef(160, 300, -120);
+glRotated(-90, 1, 0, 0);
+glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+glColor3d(0, 0, 0);
+glutSolidCube(85);
+glPopMatrix();
+
 
 ///////////////////////////////////////POHON////////////////////////////////////
 //Pohon 1
