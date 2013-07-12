@@ -1,6 +1,6 @@
 //BJEK 3D BANDARA
 //Programmer: OKE TRIYANA(10109365)
-//            ASYER TULIAN KALO(10109378)
+//            ASYER YULIAN KALO(10109378)
 //            RAJU RIYANDA(10109399)
 
 
@@ -369,8 +369,8 @@ void ranting(void){
 
 void bangunan(void){
    
-     
-glPushMatrix();
+  
+glPushMatrix();  
 glTranslatef(30, 30, -120);
 glScalef(10,5,5);
 glColor3f(0.3402, 0.3412, 0.3117);
@@ -473,6 +473,7 @@ glPopMatrix();
 glScaled(15,1,1);
 glutSolidCube(1);
 glPopMatrix();
+
      }
    
    
@@ -695,7 +696,7 @@ glPopMatrix();
  glPushMatrix();
  glTranslatef(76,30,8); 
     glScalef(0.70,0.60,1);
-    glColor3f(1.0000, 0.5252, 0.0157);
+      glColor3f(0.8, 0.2, 0.3);
  knalpot();
     glPopMatrix();
 
@@ -724,7 +725,7 @@ atap();
 ///////////////////////////////////////POHON////////////////////////////////////
 //Pohon 1
 glPushMatrix();
-        glTranslatef(-180,15,-105);
+        glTranslatef(-180,7,-105);
         glScalef(1, 1, 1);
         glRotatef(10,0,1,0);
         pohon();
@@ -750,7 +751,7 @@ glPushMatrix();
 glPopMatrix();
 //Pohon 2
 glPushMatrix();
-        glTranslatef(-150,15,-105);
+        glTranslatef(-150,7,-105);
         glScalef(1, 1, 1);
         glRotatef(170,0,1,0);
         pohon();
@@ -776,7 +777,7 @@ glPushMatrix();
 glPopMatrix();
 //Pohon 3
 glPushMatrix();
-        glTranslatef(-105,15,-105);
+        glTranslatef(-105,7,-105);
         glScalef(1, 1, 1);
         glRotatef(90,0,1,0);
         pohon();
@@ -802,7 +803,7 @@ glPushMatrix();
 glPopMatrix();
 //Pohon 4
 glPushMatrix();
-        glTranslatef(165,15,-105);
+        glTranslatef(165,7,-105);
         glScalef(1, 1, 1);
         glRotatef(90,0,1,0);
         pohon();
@@ -828,7 +829,7 @@ glPushMatrix();
 glPopMatrix();
 //Pohon 5
 glPushMatrix();
-        glTranslatef(215,15,-105);
+        glTranslatef(215,7,-105);
         glScalef(1, 1, 1);
         glRotatef(110,0,1,0);
         pohon();
@@ -1514,7 +1515,7 @@ int main(int argc, char **argv) {
     	 cout<<"OBJEK_3D_BANDARA\n";
     	 cout<<"================================\n";
     	 cout<<"OKE TRIYANA          (10109365)\n";
-         cout<< "ASYER TULIAN KALO   (10109378)\n";
+         cout<< "ASYER YULIAN KALO   (10109378)\n";
          cout<<"RAJU RIYANDA         (10109399)\n";
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL | GLUT_DEPTH); //add a stencil buffer to the window
