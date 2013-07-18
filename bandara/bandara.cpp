@@ -15,12 +15,27 @@
 #include <GL/gl.h>
 #include "imageloader.h"
 #include "vec3f.h"
+#include <fmod.h>
+#include <fmod_errors.h>
+
+#ifdef WIN32
+	#include <windows.h>
+	// link to fmod lib
+	#pragma comment(lib,"fmod.lib")
+#else
+	#include <wincompat.h>
+#endif
+
+FSOUND_STREAM* g_mp3_stream = NULL;
 
 
 
 
 static GLfloat spin, spin2 = 0.0;
 float angle = 0;
+float x = 30;
+float y=-7;
+float rota=30;
 GLuint mentari;
 using namespace std;
 
@@ -703,8 +718,43 @@ glPopMatrix();
 }
      
      
-     
-     
+void terbang(int value)
+{
+     x-=20;
+    if (x < -150){
+          x-=10;
+          y+=10;
+          }
+          else{
+               x-=10;
+               }
+
+    glutPostRedisplay();//mengirimkan perintah untuk mengaktifkan display secara berkala (looping)
+    glutTimerFunc(55, terbang, 0);
+} 
+ 
+ 
+ 
+
+
+ 
+ 
+ void OnExit() {
+
+	// Stop and close the mp3 file
+	FSOUND_Stream_Stop( g_mp3_stream );
+	FSOUND_Stream_Close( g_mp3_stream );
+
+	// kill off fmod
+	FSOUND_Close();
+}
+
+ 
+ 
+ 
+ 
+ 
+ 
      
      
 void display(void) {
@@ -721,6 +771,21 @@ void display(void) {
 
 bangunan();
 atap();
+
+
+
+//////////////////////////////////////////PESAWAT////////////////////////////////////////////
+ glPushMatrix();
+ glTranslatef(x,y,0);
+pesawat();
+
+glPopMatrix();
+//////////////////////////////////////////PESAWAT////////////////////////////////////////////
+
+
+
+
+
 
 ///////////////////////////////////////POHON////////////////////////////////////
 //Pohon 1
@@ -854,9 +919,6 @@ glPushMatrix();
         glPopMatrix();
 glPopMatrix();
 
-//////////////////////////////////////////PESAWAT////////////////////////////////////////////
-pesawat();
-//////////////////////////////////////////PESAWAT////////////////////////////////////////////
 
 ///////////////////////////////////////// MATAHARIKU ///////////////////////////////////
     glPushMatrix();
@@ -1126,6 +1188,7 @@ pesawat();
     glPushMatrix();
     glTranslatef(5,90,20); 
     glScalef(1.25, 1.0, 0.20);
+  
  
     awan();
     glPopMatrix();
@@ -1133,21 +1196,21 @@ pesawat();
     glPushMatrix();
     glTranslatef(60,40,20); 
     glScalef(1.25, 1.0, 0.20);
-  
+
     awan();
     glPopMatrix();	
     
     glPushMatrix();
     glTranslatef(-130,85,20); 
     glScalef(1.25, 1.0, 0.20);
-   
+  
     awan();
     glPopMatrix();
     
     glPushMatrix();
     glTranslatef(-110,75,10); 
     glScalef(1.25, 1.0, 0.20);
-  
+ 
     awan();
     glPopMatrix();
 
@@ -1397,7 +1460,7 @@ pesawat();
 	glPopMatrix();
 
 
-	
+
 	
 	
 
@@ -1430,26 +1493,27 @@ void init(void) {
 
 }
 
+    
 static void kibor(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_HOME:
-		viewy++;
+		viewy+=20;
 		break;
 	case GLUT_KEY_END:
-		viewy--;
+		viewy-=20;
 		break;
 	case GLUT_KEY_UP:
-		viewz--;
+		viewz-=20;
 		break;
 	case GLUT_KEY_DOWN:
-		viewz++;
+		viewz+=20;
 		break;
 
 	case GLUT_KEY_RIGHT:
-		viewx++;
+		viewx+=20;
 		break;
 	case GLUT_KEY_LEFT:
-		viewx--;
+		viewx-=20;
 		break;
 
 	case GLUT_KEY_F1: {
@@ -1486,16 +1550,16 @@ void keyboard(unsigned char key, int x, int y) {
 			spin = spin - 360.0;
 	}
 	if (key == 'q') {
-		viewz++;
+		viewz+=10;
 	}
 	if (key == 'e') {
-		viewz--;
+		viewz-=20;
 	}
 	if (key == 's') {
-		viewy--;
+		viewy-=20;
 	}
 	if (key == 'w') {
-		viewy++;
+		viewy+=20;
 	}
 }
 
@@ -1512,6 +1576,37 @@ void reshape(int w, int h) {
 
 
 int main(int argc, char **argv) {
+    
+    
+    // initialise fmod, 44000 Hz, 64 channels
+	if( FSOUND_Init(32000,32,0) == FALSE )
+	{
+	cerr << "[ERROR] Could not initialise fmod\n";
+		return 0;
+	}
+
+	// attempt to open the mp3 file as a stream
+	g_mp3_stream = FSOUND_Stream_Open( "PesawatTakeOff.mp3" , FSOUND_2D , 0 , 0 );
+
+	// make sure mp3 opened OK
+	if(!g_mp3_stream) {
+	cerr << "[ERROR] could not open file\n";
+		return 0;
+	}
+
+	// play the mp3
+	FSOUND_Stream_Play(0,g_mp3_stream);
+
+
+	// get a pointer to fmods fft (fast fourier transform) unit 
+	DLL_API FSOUND_DSPUNIT *fft = FSOUND_DSP_GetFFTUnit();
+
+	// enable the fft unit 
+	FSOUND_DSP_SetActive(fft,TRUE);
+    
+    
+       
+    
     	 cout<<"OBJEK_3D_BANDARA\n";
     	 cout<<"================================\n";
     	 cout<<"OKE TRIYANA          (10109365)\n";
@@ -1540,7 +1635,15 @@ int main(int argc, char **argv) {
 	glColorMaterial(GL_FRONT, GL_DIFFUSE);
     
     
+     glutTimerFunc(55, terbang, 0);//mengaktifkan timer function
+   
+     // set the function to be called when we exit
+	atexit(OnExit);
 	glutMainLoop();
+    
+	glutMainLoop();
+	
+	
 
 	return 0;
 }
