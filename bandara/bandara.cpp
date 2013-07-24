@@ -18,6 +18,9 @@
 #include <fmod.h>
 #include <fmod_errors.h>
 
+#define checkImageWidth 1000
+#define checkImageHeight 1000
+
 #ifdef WIN32
 	#include <windows.h>
 	// link to fmod lib
@@ -44,8 +47,153 @@ GLint stencilBits;
 static int viewx = 1;           /////////////// script awal penglihatan /////////
 static int viewy = 150;
 static int viewz = 450;
-
 float rot = 0;
+
+GLuint texture[3];
+
+struct gbr {
+    unsigned long sizeX;        //deklarasi untuk tekstur
+    unsigned long sizeY;
+    char *data;
+};
+
+typedef struct gbr gbr;
+
+
+
+GLubyte checkImage[checkImageWidth][checkImageHeight][3];
+
+
+
+
+// cek gambar
+void makeCheckImage(void){
+    int i, j, c;
+    for (i = 0; i < checkImageWidth; i++) {
+        for (j = 0; j < checkImageHeight; j++) {
+            c = ((((i&0x8)==0)^((j&0x8)==0)))*255;
+            checkImage[i][j][0] = (GLubyte) c;
+            checkImage[i][j][1] = (GLubyte) c;
+            checkImage[i][j][2] = (GLubyte) c;
+        }
+    }
+}
+
+// load gambar
+int ImageLoad(char *filename, gbr *gbr) {
+    FILE *file;
+    unsigned long size; // ukuran gambar dalam size
+    unsigned long i; 
+    unsigned short int planes; // nomor dari palanes (1)
+    unsigned short int bpp; //jumlah bit perpixel =24 bit
+    char temp; // temporary color storage for bgr-rgb conversion.
+
+    // membuka file
+    if ((file = fopen(filename, "rb"))==NULL){
+        printf("File Not Found : %s\n",filename);
+        return 0;
+    }
+
+   // seek through the bmp header, up to the width/height:
+    fseek(file, 18, SEEK_CUR);
+
+    // membaca lebar
+    if ((i = fread(&gbr->sizeX, 4, 1, file)) != 1) {
+        printf("Error reading width from %s.\n", filename);
+        return 0;
+    }
+    
+
+    // tinggi
+    if ((i = fread(&gbr->sizeY, 4, 1, file)) != 1) {
+        printf("Error reading height from %s.\n", filename);
+        return 0;
+    }
+
+    \
+   // kalkulasi ukuran .
+    size = gbr->sizeX * gbr->sizeY * 3;
+    // read the planes
+    if ((fread(&planes, 2, 1, file)) != 1) {
+        printf("Error reading planes from %s.\n", filename);
+        return 0;
+    }
+    if (planes != 1) {
+        printf("Planes from %s is not 1: %u\n", filename, planes);
+        return 0;
+    }
+
+    // read the bitsperpixel
+    if ((i = fread(&bpp, 2, 1, file)) != 1) {
+        printf("Error reading bpp from %s.\n", filename);
+        return 0;
+    }
+    if (bpp != 24) {
+        printf("Bpp from %s is not 24: %u\n", filename, bpp);
+        return 0;
+    }
+
+   // seek past the rest of the bitmap header.
+    fseek(file, 24, SEEK_CUR);
+    // baca data
+    gbr->data = (char *) malloc(size);
+    if (gbr->data == NULL) {
+        printf("Error allocating memory for color-corrected image data");
+        return 0;
+    }
+
+    if ((i = fread(gbr->data, size, 1, file)) != 1) {
+        printf("Error reading image data from %s.\n", filename);
+        return 0;
+    }
+
+    for (i=0;i<size;i+=3) { // reverse all of the colors. (bgr -> rgb)
+        temp = gbr->data[i];
+        gbr->data[i] = gbr->data[i+2];
+        gbr->data[i+2] = temp;
+    }
+  
+    return 1;
+}
+
+
+
+//RUANG SPACE UNTUK JENDELA
+gbr * loadTexture1(){
+    gbr *gbr1;
+
+    // alokasi memori untuk teksture jendela
+    gbr1 = (gbr *) malloc(sizeof(gbr));
+
+    if (gbr1 == NULL) {
+        printf("Error allocating space for image");
+        exit(0);
+    }
+    if (!ImageLoad("jendela2.bmp", gbr1)) {
+        exit(1);
+    }
+    return gbr1;
+}
+//PAPAN NAMA
+gbr * loadTexture2(){
+    gbr *gbr2;
+
+    // alokasi memori untuk tekstur papan nama
+    gbr2 = (gbr *) malloc(sizeof(gbr));
+
+    if (gbr2 == NULL) {
+        printf("Error allocating space for image");
+        exit(0);
+    }
+    if (!ImageLoad("IF9.bmp", gbr2)) {
+        exit(1);
+    }
+    return gbr2;
+}
+
+
+
+
 
 //train 2D
 //class untuk terain 2D
@@ -201,14 +349,6 @@ public:
 
 
 
-void initRendering(void) {
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_NORMALIZE);
-	glShadeModel(GL_SMOOTH);
-}
 
 //Loads a terrain from a heightmap.  The heights of the terrain range from
 //-height / 2 to height / 2.
@@ -285,9 +425,17 @@ void drawSceneTanah(Terrain *terrain, GLfloat r, GLfloat g, GLfloat b) {
 unsigned int LoadTextureFromBmpFile(char *filename);
 
 
+
+//---------------------------procedure background-------------------------------
+
+
+
+
 void matahari(void)
 {
+     
     glPushMatrix();
+      
     glTranslatef(-120,120,-100);
     glColor3ub(255, 253, 116);
     glColor3f(1.0000, 0.5252, 0.0157);
@@ -386,17 +534,24 @@ void bangunan(void){
    
   
 glPushMatrix();  
-glTranslatef(30, 30, -120);
-glScalef(10,5,5);
+glTranslatef(30, 60, -120);
+glScalef(10,7,5);
 glColor3f(0.3402, 0.3412, 0.3117);
 glutSolidCube(20);
 glPopMatrix(); 
 
+  
+glPushMatrix();  
+glTranslatef(30, 110, -140);
+glScalef(10,5,3);
+glColor3f(0.3402, 0.3412, 0.3117);
+glutSolidCube(20);
+glPopMatrix();
 
 //pagar
 glPushMatrix();
 glColor3f(0, 1, 0);
-glTranslatef(40,70, -69);
+glTranslatef(40,140, -69);
 glScalef(10,2,1);
 glutSolidCube(15);
 glPopMatrix();
@@ -484,7 +639,7 @@ glPopMatrix();
 //garis atas pintu
  glPushMatrix();
  glColor3f(0.0980, 0.0608, 0.0077);
- glTranslatef(25,27, -70);
+ glTranslatef(25,30, -70);
 glScaled(15,1,1);
 glutSolidCube(1);
 glPopMatrix();
@@ -544,6 +699,8 @@ void body(void){
 glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 glColor3ub(153, 223, 255);
 glColor3f(1.0,0.0,0.0);
+glTranslatef(30,30,10); 
+    glScalef(5, 1, 1.5);
 glutSolidSphere(10, 50, 50);
 glPopMatrix();
      }
@@ -553,6 +710,8 @@ void depan(void){
 glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 glColor3ub(153, 223, 255);
 glColor3f(0.8,0.8,0.8);
+glTranslatef(2,34,10); 
+    glScalef(2,0.98,1);
 glutSolidSphere(8, 25, 10);
 glPopMatrix();
      
@@ -563,6 +722,8 @@ void sayap(void){
 glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 glColor3ub(153, 223, 255);
 glColor3f(0.9,0.8,0.8);
+glTranslatef(30,30,10); 
+glScalef(1,0.5,7);
 glutSolidSphere(8, 25, 10);
 glPopMatrix();
      }     
@@ -573,7 +734,10 @@ void sayapbelakang(void){
 glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 glColor3ub(153, 223, 255);
 glColor3f(0.9,0.8,0.8);
+glTranslatef(67,30,10); 
+    glScalef(1,0.5,3);
 glutSolidSphere(8, 25, 10);
+
 glPopMatrix();
      } 
      
@@ -582,38 +746,36 @@ glPopMatrix();
 glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 glColor3ub(153, 223, 255);
 glColor3f(0.9,0.8,0.8);
+glTranslatef(67,40,10); 
+glScalef(0.5,1,0.3);
+glRotatef(130,1.0,1.0,1.0);
 glutSolidSphere(10,100, 80);
 glPopMatrix();
      }       
      
-void roda(void){
-glPushMatrix();
- glColor3f(0.0980, 0.0608, 0.0077);
-glScaled(1.5,10,3);
-glutSolidCube(1);
-glPopMatrix();
 
-}
-
-void roda1(void){
-        glPushMatrix(); 
-glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-glColor3ub(153, 223, 255);
-glColor3f(0.0,0.0,0.0);
-glutSolidSphere(2, 50, 4);
+     
+void pintu (void){
+     glPushMatrix();  
+glColor3f(1, 1, 1);
+glTranslatef(53,30, 20);
+glScaled(1,1.5,0.89);
+glutSolidSphere(5, 10, 5);
 glPopMatrix();
-}
-      
+} 
 void knalpot(void) {
      ////////////////////////////////////////////////////////////Knalpot/////////////////////////////////////////
      glPushMatrix();
      glTranslatef(1,0.6,2);
+      glTranslatef(76,30,8); 
+    glScalef(0.70,0.60,1);
+      glColor3f(0.8, 0.2, 0.3);
      glutSolidSphere(5, 50, 50);
      glPopMatrix(); 
 } 
 
      
-void pesawat(void){
+void pesawat(){
 
 GLUquadricObj *pObj;
 pObj =gluNewQuadric();
@@ -626,92 +788,25 @@ glRotatef(608,-1,50,5);
 gluCylinder(pObj, 4, 0.7, 25, 30, 30);
 glPopMatrix();   
 
-
 //body
 glPushMatrix();
- glTranslatef(30,30,10); 
-    glScalef(5, 1, 1.5);
-    body();
-    glPopMatrix();
-
-
+    body();  
 //depan
-glPushMatrix();
- glTranslatef(2,34,10); 
-    glScalef(2,0.98,1);
-  depan();
-    glPopMatrix();
+  depan();    
     
  //sayap
- glPushMatrix();
- glTranslatef(30,30,10); 
-    glScalef(1,0.5,7);
   sayap();
-    glPopMatrix();
-    
-   //sayap belakang
- glPushMatrix();
- glTranslatef(67,30,10); 
-    glScalef(1,0.5,3);
-  sayapbelakang();
-    glPopMatrix();
-    
-    //sayap atas
-  glPushMatrix();
- glTranslatef(67,40,10); 
-    glScalef(0.5,1,0.3);
-    glRotatef(130,1.0,1.0,1.0);
+ //sayap belakang
+  sayapbelakang(); 
+ //sayap atas
+ 
   sayapatas();
-    glPopMatrix();
-  
-//roda depan
-glPushMatrix();    
-glTranslatef(10,20,10);
-roda();
-glPopMatrix();
-
-glPushMatrix();    
-glTranslatef(10,15,10);
-roda1();
-glPopMatrix();
-
-//roda belakang1
-
-glPushMatrix();    
-glTranslatef(50,20,2);
-roda();
-glPopMatrix();
-
-glPushMatrix();    
-glTranslatef(50,15,2);
-roda1();
-glPopMatrix();
-
-//roda belakang1
-
-glPushMatrix();    
-glTranslatef(50,20,18);
-roda();
-glPopMatrix();
-
-glPushMatrix();    
-glTranslatef(50,15,18);
-roda1();
-glPopMatrix();
 
 //pintu
-glPushMatrix();  
-glColor3f(1, 1, 1);
-glTranslatef(53,30, 20);
-glScaled(1,1.5,0.89);
-glutSolidSphere(5, 10, 5);
-glPopMatrix();
 
+pintu();
    //Knalpot
- glPushMatrix();
- glTranslatef(76,30,8); 
-    glScalef(0.70,0.60,1);
-      glColor3f(0.8, 0.2, 0.3);
+
  knalpot();
     glPopMatrix();
 
@@ -741,36 +836,84 @@ void terbang(int value)
  
  void OnExit() {
 
-	// Stop and close the mp3 file
+	//berhenti dan keluar dari file mp3
 	FSOUND_Stream_Stop( g_mp3_stream );
 	FSOUND_Stream_Close( g_mp3_stream );
 
-	// kill off fmod
+	// matikan fmod
 	FSOUND_Close();
 }
 
  
  
+ //jendela tekstur
+ void jendela(void){
+     
+     
+     glBindTexture(GL_TEXTURE_2D, texture[1]);
+     glEnable ( GL_TEXTURE_2D );
+     	glBegin(GL_QUADS);
+        glTexCoord2f(1.0, 1.0);glVertex3f(-3,5,-3); //atas kiri
+        glTexCoord2f(0.0, 1.0);glVertex3f(3,5,-3); //atas kanan
+        glTexCoord2f(0.0, 0.0);glVertex3f(3,-0.5,-3);//kanan bawah 
+        glTexCoord2f(1.0, 0.0);glVertex3f(-3,-0.5,-3); //kiri bawah
+        	
+	glEnd();
+	glDisable ( GL_TEXTURE_2D );
+}
  
- 
- 
- 
+ //Papan nama tekstur
+ void papan(void){
+     
+     
+     glBindTexture(GL_TEXTURE_2D, texture[2]);
+     glEnable ( GL_TEXTURE_2D );
+     	glBegin(GL_QUADS);
+        glTexCoord2f(1.0, 1.0);glVertex3f(-3,5,-3); //atas kiri
+        glTexCoord2f(0.0, 1.0);glVertex3f(3,5,-3); //atas kanan
+        glTexCoord2f(0.0, 0.0);glVertex3f(3,-0.5,-3);//kanan bawah 
+        glTexCoord2f(1.0, 0.0);glVertex3f(-3,-0.5,-3); //kiri bawah
+        	
+	glEnd();
+	glDisable ( GL_TEXTURE_2D );
+}
      
      
 void display(void) {
      
     
-
 	glClearColor(0.0, 0.6, 0.8, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); //clear the buffers
 	glLoadIdentity();
 	gluLookAt(viewx, viewy, viewz, 0.0, 0.0, 5.0, 0.0, 1.0, 0.0);
+	
 
-	glPushMatrix();
+//tekstur jendela 
+glPushMatrix();
+glPushMatrix();
+glTranslatef(-35,90,-70);
+glRotatef(180,1,1,0);
+glScalef(8, 30, 1.5);
+jendela();
+glPopMatrix();
+
+
+
+//tekstur papan
+glPushMatrix();
+glTranslatef(40,130,-65);
+glRotatef(180,0,16,0);
+glScalef(20, 5, 1.5);
+papan();
+glPopMatrix();
+
 
 
 bangunan();
+glPushMatrix();
+glTranslatef(7,70,-20);
 atap();
+glPopMatrix();
 
 
 
@@ -1447,9 +1590,9 @@ glPopMatrix();
     markajalan();
     glPopMatrix();
     
-
+	
 //////////////////////////////////////////////////////////// AHIR DARI GARIS PUTUS - PUTUS ////////////////////////////////////////////////  
-
+glPushMatrix();
 	drawSceneTanah(_terrain, 0.3f, 0.9f, 0.0f);
 	glPopMatrix();
 
@@ -1463,6 +1606,7 @@ glPopMatrix();
 
 	
 	
+
 
 	glutSwapBuffers();
 	glFlush();
@@ -1484,12 +1628,64 @@ void init(void) {
 	glShadeModel(GL_SMOOTH);
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glEnable(GL_CULL_FACE);
+	
 
 	_terrain = loadTerrain("jalan.bmp", 20);
 	_terrainTanah = loadTerrain("aspal.bmp", 20);
+	
+	
+	
+	 int n;
+ 	
+	 glEnable(GL_DEPTH_TEST);
+	 glDepthFunc(GL_LESS);
 
-   
-	//binding texture
+    gbr *gbr1 = loadTexture1();
+      gbr *gbr2 = loadTexture2();
+    
+    
+
+if(gbr1 == NULL || gbr2== NULL) {
+        printf("Image was not returned from loadTexture\n");
+        exit(0);
+    }
+
+    makeCheckImage();
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    
+    
+   glGenTextures(3, texture);
+    glBindTexture(GL_TEXTURE_2D, texture[2]);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); //scale linearly when image bigger than texture
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); //scale linearly when image smalled than texture
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, gbr2->sizeX, gbr2->sizeY, 0,
+    GL_RGB, GL_UNSIGNED_BYTE, gbr2->data);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL); 
+    
+    
+    
+    
+    
+         // Buat tekstur jendela
+    glGenTextures(2, texture);
+    glBindTexture(GL_TEXTURE_2D, texture[1]);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); //scale linearly when image bigger than texture
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR); //scale linearly when image smalled than texture
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, gbr1->sizeX, gbr1->sizeY, 0,
+    GL_RGB, GL_UNSIGNED_BYTE, gbr1->data);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    
+    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, checkImageWidth,
+    checkImageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE,&checkImage[0][0][0]);
+    glEnable(GL_TEXTURE_2D);
+    glShadeModel(GL_FLAT);
+
 
 }
 
@@ -1517,6 +1713,7 @@ static void kibor(int key, int x, int y) {
 		break;
 
 	case GLUT_KEY_F1: {
+         // Cahaya terang
 		glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 		glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
@@ -1525,6 +1722,7 @@ static void kibor(int key, int x, int y) {
 		;
 		break;
 	case GLUT_KEY_F2: {
+         //cahaya gelap
 		glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient2);
 		glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse2);
 		glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
@@ -1569,6 +1767,7 @@ void reshape(int w, int h) {
 	glLoadIdentity();
 	gluPerspective(60, (GLfloat) w / (GLfloat) h, 0.1, 1000.0);
 	glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
 }
 
 
@@ -1578,32 +1777,32 @@ void reshape(int w, int h) {
 int main(int argc, char **argv) {
     
     
-    // initialise fmod, 44000 Hz, 64 channels
+   
+   //Inisialisai fmod, 44000 Hz, 64 channel
 	if( FSOUND_Init(32000,32,0) == FALSE )
 	{
 	cerr << "[ERROR] Could not initialise fmod\n";
 		return 0;
 	}
 
-	// attempt to open the mp3 file as a stream
+	// membuka file mp3
 	g_mp3_stream = FSOUND_Stream_Open( "PesawatTakeOff.mp3" , FSOUND_2D , 0 , 0 );
 
-	// make sure mp3 opened OK
+	// kondisi file mp3
 	if(!g_mp3_stream) {
 	cerr << "[ERROR] could not open file\n";
 		return 0;
 	}
 
-	// play the mp3
+	// putar file mp3
 	FSOUND_Stream_Play(0,g_mp3_stream);
 
-
-	// get a pointer to fmods fft (fast fourier transform) unit 
+ 
+	// Pointer untuk fmod fft (fast fourier transform) unit 
 	DLL_API FSOUND_DSPUNIT *fft = FSOUND_DSP_GetFFTUnit();
 
-	// enable the fft unit 
+	// aktifkan fft unit
 	FSOUND_DSP_SetActive(fft,TRUE);
-    
     
        
     
@@ -1613,7 +1812,7 @@ int main(int argc, char **argv) {
          cout<< "ASYER YULIAN KALO   (10109378)\n";
          cout<<"RAJU RIYANDA         (10109399)\n";
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL | GLUT_DEPTH); //add a stencil buffer to the window
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL | GLUT_DEPTH); //menambahkan stencil buffer pd window
 	glutInitWindowSize(800, 600);
 	glutInitWindowPosition(100, 100);
 	glutCreateWindow("Objek 3D Bandara-IF9");
@@ -1637,11 +1836,12 @@ int main(int argc, char **argv) {
     
      glutTimerFunc(55, terbang, 0);//mengaktifkan timer function
    
-     // set the function to be called when we exit
+     // atur fungsi exit ketika memanggil
 	atexit(OnExit);
 	glutMainLoop();
     
 	glutMainLoop();
+	
 	
 	
 
