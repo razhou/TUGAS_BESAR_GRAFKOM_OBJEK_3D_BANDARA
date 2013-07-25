@@ -438,7 +438,7 @@ void matahari(void)
       
     glTranslatef(-120,120,-100);
     glColor3ub(255, 253, 116);
-    glColor3f(1.0000, 0.5252, 0.0157);
+    glColor3f(1.0, 1.0, 0.0);
     glutSolidSphere(20, 60, 60);
     glPopMatrix();
     glEndList();
@@ -477,6 +477,7 @@ void awan(void){
 void lampu(void) {
      ////////////////////////////////////////////////////////////LAMPU PEMBATAS DI LANDASAN/////////////////////////////////////////
      glPushMatrix();
+      glColor3f(1.0, 0.5252, 0.0157);
      glTranslatef(1,0.6,2);
      glutSolidSphere(5, 50, 50);
      glPopMatrix(); 
@@ -693,7 +694,7 @@ glPopMatrix();
 }  
      
      
-     
+//Badan pesawat    
 void body(void){
      glPushMatrix(); 
 glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -704,7 +705,7 @@ glTranslatef(30,30,10);
 glutSolidSphere(10, 50, 50);
 glPopMatrix();
      }
-     
+//Depan pesawat  
 void depan(void){
      glPushMatrix(); 
 glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -716,7 +717,7 @@ glutSolidSphere(8, 25, 10);
 glPopMatrix();
      
      }
-     
+ //sayap utama    
 void sayap(void){
     glPushMatrix(); 
 glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -728,7 +729,7 @@ glutSolidSphere(8, 25, 10);
 glPopMatrix();
      }     
 
-     
+ //sayap belakang    
 void sayapbelakang(void){
      glPushMatrix(); 
 glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -740,7 +741,7 @@ glutSolidSphere(8, 25, 10);
 
 glPopMatrix();
      } 
-     
+ //sayap atas belakng pesawat    
  void sayapatas(void){
     glPushMatrix(); 
 glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -754,7 +755,7 @@ glPopMatrix();
      }       
      
 
-     
+ //pintu belakang pesawat    
 void pintu (void){
      glPushMatrix();  
 glColor3f(1, 1, 1);
@@ -763,6 +764,8 @@ glScaled(1,1.5,0.89);
 glutSolidSphere(5, 10, 5);
 glPopMatrix();
 } 
+
+//Knalpot pesawat
 void knalpot(void) {
      ////////////////////////////////////////////////////////////Knalpot/////////////////////////////////////////
      glPushMatrix();
@@ -774,7 +777,8 @@ void knalpot(void) {
      glPopMatrix(); 
 } 
 
-     
+   
+//Pesawat  
 void pesawat(){
 
 GLUquadricObj *pObj;
@@ -812,7 +816,7 @@ pintu();
 
 }
      
-     
+//untuk terbang pesawatnya  
 void terbang(int value)
 {
      x-=20;
@@ -833,7 +837,7 @@ void terbang(int value)
 
 
  
- 
+ //keluar dari file mp3
  void OnExit() {
 
 	//berhenti dan keluar dari file mp3
@@ -908,8 +912,10 @@ papan();
 glPopMatrix();
 
 
-
+//bangunan
 bangunan();
+
+//atap
 glPushMatrix();
 glTranslatef(7,70,-20);
 atap();
@@ -1329,30 +1335,30 @@ glPopMatrix();
 
 ////////////////////////////////////////////// Awan - Awan Dilangit ////////////////////////////////////
     glPushMatrix();
-    glTranslatef(5,90,20); 
-    glScalef(1.25, 1.0, 0.20);
+    glTranslatef(5,130,20); 
+    glScalef(1.25, 1.0, 1);
   
  
     awan();
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(60,40,20); 
-    glScalef(1.25, 1.0, 0.20);
+    glTranslatef(60,120,20); 
+    glScalef(1.25, 1.0,1);
 
     awan();
     glPopMatrix();	
     
     glPushMatrix();
-    glTranslatef(-130,85,20); 
-    glScalef(1.25, 1.0, 0.20);
+    glTranslatef(-130,120,20); 
+    glScalef(1.25, 1.0, 1);
   
     awan();
     glPopMatrix();
     
     glPushMatrix();
-    glTranslatef(-110,75,10); 
-    glScalef(1.25, 1.0, 0.20);
+    glTranslatef(-110,130,10); 
+    glScalef(1.25, 1.0, 1);
  
     awan();
     glPopMatrix();
@@ -1761,6 +1767,7 @@ void keyboard(unsigned char key, int x, int y) {
 	}
 }
 
+//untuk mengubah ukuran window
 void reshape(int w, int h) {
 	glViewport(0, 0, (GLsizei) w, (GLsizei) h);
 	glMatrixMode(GL_PROJECTION);
@@ -1776,8 +1783,8 @@ void reshape(int w, int h) {
 
 int main(int argc, char **argv) {
     
-    
    
+  
    //Inisialisai fmod, 44000 Hz, 64 channel
 	if( FSOUND_Init(32000,32,0) == FALSE )
 	{
@@ -1803,6 +1810,7 @@ int main(int argc, char **argv) {
 
 	// aktifkan fft unit
 	FSOUND_DSP_SetActive(fft,TRUE);
+	
     
        
     
@@ -1811,10 +1819,11 @@ int main(int argc, char **argv) {
     	 cout<<"OKE TRIYANA          (10109365)\n";
          cout<< "ASYER YULIAN KALO   (10109378)\n";
          cout<<"RAJU RIYANDA         (10109399)\n";
+         
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_STENCIL | GLUT_DEPTH); //menambahkan stencil buffer pd window
-	glutInitWindowSize(800, 600);
-	glutInitWindowPosition(100, 100);
+	glutInitWindowSize(800, 600);//ukuran tampilan 
+	glutInitWindowPosition(100, 100); //posisi tampilan
 	glutCreateWindow("Objek 3D Bandara-IF9");
 	init();
 
